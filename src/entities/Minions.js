@@ -8,12 +8,13 @@ var BG_WIDTH = G_BG_WIDTH;
 var BG_HEIGHT = G_BG_HEIGHT;
 var MINION_WIDTH = minionConfig.viewBounds.w;
 var MINION_HEIGHT = minionConfig.viewBounds.h;
-var MINION_OFFSET_X = MINION_WIDTH / 2;
+var MINION_OFFSET_X = 2.5 * MINION_WIDTH;
 var MINION_OFFSET_Y = 350;
 var MINION_COUNT = 3;
 var MINION_JUMP_VY = -0.8;
 
 var gameView;
+var abs = Math.abs;
 var min = Math.min;
 var max = Math.max;
 
@@ -24,7 +25,6 @@ var Minion = Class(Entity, function() {
 
 	this.reset = function(x, y, config) {
 		this.id = config.id;
-		this.index = this.poolIndex;
 		this.offsetX = x;
 		this.setState(STATES.FALLING);
 
@@ -45,7 +45,14 @@ var Minion = Class(Entity, function() {
 
 		gameView.platforms.onAllCollisions(this, this.onPlatformCollide, this);
 
-		if (this.y + this.hitBounds.y > BG_HEIGHT) {
+		var offX = this.pool.getMinionOffsetX(this.poolIndex);
+		if (this.offsetX !== offX) {
+			var dx = (offX - this.offsetX) / 30;
+			this.offsetX += dx;
+			this.x += dx;
+		}
+
+		if (this.y > BG_HEIGHT) {
 			this.setState(STATES.DEAD);
 		}
 	};
@@ -53,7 +60,7 @@ var Minion = Class(Entity, function() {
 	this.updateView = function(dt) {
 		var s = this.view.style;
 		var b = this.viewBounds;
-		s.x = this.x + b.x - gameView.getScreenX();
+		s.x = this.x + b.x - this.pool.screenX;
 		s.y = this.y + b.y;
 	};
 
@@ -69,10 +76,6 @@ var Minion = Class(Entity, function() {
 	this.setState = function(state) {
 		this.state = state;
 		state.onStateSet(this);
-	};
-
-	this.getScreenX = function() {
-		return this.x - this.offsetX;
 	};
 
 	this.isAlive = function() {
@@ -105,7 +108,7 @@ var STATES = exports.STATES = {
 	},
 	DEAD: {
 		onStateSet: function(minion) {
-			minion.vx = 0;
+			minion.release();
 		},
 		onSwipe: function(minion, swipeType) {}
 	}
@@ -127,8 +130,10 @@ exports = Class(EntityPool, function() {
 	this.reset = function() {
 		sup.reset.call(this);
 
+		this.screenX = 0;
+
 		for (var i = 0; i < MINION_COUNT; i++) {
-			var x = (MINION_COUNT - i) * MINION_OFFSET_X;
+			var x = this.getMinionOffsetX(i);
 			var y = MINION_OFFSET_Y;
 			var config = merge({ zIndex: zIndex }, minionConfig);
 			config = merge(config, minionConfig.types[i]);
@@ -138,6 +143,8 @@ exports = Class(EntityPool, function() {
 
 	this.update = function(dt) {
 		sup.update.call(this, dt);
+
+		this.screenX += dt * minionConfig.vx;
 	};
 
 	this.onSwipe = function(swipeType) {
@@ -170,5 +177,9 @@ exports = Class(EntityPool, function() {
 			}
 		}, this);
 		return last;
+	};
+
+	this.getMinionOffsetX = function(i) {
+		return MINION_OFFSET_X * (MINION_COUNT - i) / MINION_COUNT - MINION_WIDTH;
 	};
 });

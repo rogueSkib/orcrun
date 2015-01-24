@@ -28,7 +28,7 @@ exports = Class(View, function() {
 	};
 
 	this.reset = function(minion) {
-		var data = MINION_TYPES[minion.index];
+		var data = MINION_TYPES[minion.poolIndex];
 		this.sprite.resetAllAnimations({
 			url: data.url,
 			defaultAnimation: 'run',

@@ -81,8 +81,6 @@ exports = Class(View, function(supr) {
 		model.gameOver = false;
 		model.gameStarted = true;
 
-		this.lastScreenX = 0;
-
 		this.pEngine.killAllParticles();
 		this.minions.reset();
 		this.platforms.reset();
@@ -99,7 +97,7 @@ exports = Class(View, function(supr) {
 
 		this.minions.update(dt);
 		this.platforms.update(dt);
-		this.parallax.update(-this.getScreenX(), 0);
+		this.parallax.update(-this.minions.screenX, 0);
 
 		this.pEngine.runTick(dt);
 
@@ -121,15 +119,5 @@ exports = Class(View, function(supr) {
 
 	this.onFinish = function() {
 		GC.app.onFinishGame(model);
-	};
-
-	this.getScreenX = function() {
-		var x = this.lastScreenX;
-		var lastMinion = this.minions.getLastMinion(true);
-		if (lastMinion && !model.gameOver) {
-			x = lastMinion.getScreenX();
-		}
-		this.lastScreenX = x;
-		return x;
 	};
 });

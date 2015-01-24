@@ -29,8 +29,7 @@ var Platform = Class(Entity, function() {
 		sup.update.call(this, dt);
 
 		var vb = this.viewBounds;
-		var screenX = gameView.getScreenX();
-		if (this.x + vb.x + vb.w < screenX) {
+		if (this.x + vb.x + vb.w < gameView.minions.screenX) {
 			this.release();
 		}
 	};
@@ -64,12 +63,12 @@ exports = Class(EntityPool, function() {
 	this.update = function(dt) {
 		sup.update.call(this, dt);
 
-		this.view.style.x = -gameView.getScreenX();
+		this.view.style.x = -gameView.minions.screenX;
 		this.spawnPlatforms();
 	};
 
 	this.spawnPlatforms = function() {
-		var screenX = gameView.getScreenX();
+		var screenX = gameView.minions.screenX;
 		while (this.x <= screenX + BG_WIDTH) {
 			this.x += this.spawnOne(this.x);
 		}
