@@ -1,0 +1,48 @@
+{
+  "addons": {},
+  "android": {
+    "icons": {
+      "114": "resources/icons/ios114.png",
+      "144": "resources/icons/ios144.png",
+      "36": "resources/icons/android36.png",
+      "48": "resources/icons/android48.png",
+      "57": "resources/icons/ios57.png",
+      "72": "resources/icons/android72.png",
+      "96": "resources/icons/android96.png"
+    },
+    "versionCode": 1
+  },
+  "appID": "f32f6f0b8b224271a86331902a3cb641",
+  "dependencies": {
+    "devkit-core": "https://github.com/gameclosure/devkit-core#v2.0.20",
+    "devkit-entities": "https://github.com/gameclosure/devkit-entities#v0.2.4",
+    "devkit-parallax": "https://github.com/gameclosure/devkit-parallax#v0.1.3"
+  },
+  "description": "Orc Run! started for the Global Game Jam 2015",
+  "ios": {
+    "icons": {
+      "114": "resources/icons/ios114.png",
+      "144": "resources/icons/ios144.png",
+      "36": "resources/icons/android36.png",
+      "48": "resources/icons/android48.png",
+      "57": "resources/icons/ios57.png",
+      "72": "resources/icons/android72.png",
+      "96": "resources/icons/android96.png"
+    },
+    "versionCode": 1
+  },
+  "shortName": "orcrun",
+  "splash": {
+    "autoHide": true,
+    "universal": "resources/splash/splash.png"
+  },
+  "studio": {
+    "domain": "studio.com",
+    "name": "Studio Name"
+  },
+  "supportedOrientations": [
+    "landscape"
+  ],
+  "title": "ORC RUN!",
+  "version": "1.0.0"
+}
