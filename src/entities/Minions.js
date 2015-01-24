@@ -149,7 +149,11 @@ exports = Class(EntityPool, function() {
 
 	this.onSwipe = function(swipeType) {
 		this.forEachActiveEntity(function(minion, i) {
-			minion.state.onSwipe(minion, swipeType);
+			var dist = minion.poolIndex * MINION_OFFSET_X / MINION_COUNT;
+			var delay = dist / minion.vx;
+			setTimeout(function() {
+				minion.state.onSwipe(minion, swipeType);
+			}, delay);
 		}, this);
 	};
 
