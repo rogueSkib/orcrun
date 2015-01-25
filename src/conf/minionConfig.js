@@ -25,6 +25,8 @@ exports = {
 			defense: {
 				x: 175,
 				y: 35,
+				anchorX: 58,
+				anchorY: 170,
 				width: 109,
 				height: 181,
 				url: MINION_URL + "mage/hand"
@@ -61,6 +63,8 @@ exports = {
 			defense: {
 				x: 140,
 				y: 56,
+				anchorX: 30,
+				anchorY: 95,
 				width: 124,
 				height: 177,
 				url: MINION_URL + "fighter/shield"
