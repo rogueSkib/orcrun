@@ -9,21 +9,24 @@ exports = {
 			swipeType: "up",
 			needsView: false,
 			width: BG_WIDTH / 5,
-			gapRange: [0.6 * BG_WIDTH, 0.8 * BG_WIDTH]
+			gapRange: [0.6 * BG_WIDTH, 0.8 * BG_WIDTH],
+			delay: 500
 		},
 		{
 			id: "hole",
 			swipeType: "up",
 			needsView: false,
 			width: BG_WIDTH / 5,
-			gapRange: [0.6 * BG_WIDTH, 0.8 * BG_WIDTH]
+			gapRange: [0.6 * BG_WIDTH, 0.8 * BG_WIDTH],
+			delay: 500
 		},
 		{
 			id: "hole",
 			swipeType: "up",
 			needsView: false,
 			width: BG_WIDTH / 5,
-			gapRange: [0.6 * BG_WIDTH, 0.8 * BG_WIDTH]
+			gapRange: [0.6 * BG_WIDTH, 0.8 * BG_WIDTH],
+			delay: 500
 		},
 		{
 			id: "axe",
@@ -33,7 +36,8 @@ exports = {
 			hitBounds: { x: 0, y: 410, r: 110 },
 			viewBounds: { x: 0, y: 0, w: 338, h: 490 },
 			gapRange: [0.75 * BG_WIDTH, 1.25 * BG_WIDTH],
-			image: TRAP_URL + "lair/trap_axe.png"
+			image: TRAP_URL + "lair/trap_axe.png",
+			delay: 500
 		},
 		{
 			id: "chicken",
@@ -46,7 +50,8 @@ exports = {
 			url: TRAP_URL + "lair/chicken",
 			defaultAnimation: "fly",
 			autoStart: false,
-			loop: true
+			loop: true,
+			delay: 500
 		},
 		{
 			id: "beholder",
@@ -61,7 +66,8 @@ exports = {
 			defaultAnimation: "idle",
 			autoStart: true,
 			loop: true,
-			aura: TRAP_URL + "lair/aura_blue.png"
+			aura: TRAP_URL + "lair/aura_blue.png",
+			delay: 1000
 		}
 	]
 };

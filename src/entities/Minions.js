@@ -120,6 +120,12 @@ var Minion = Class(Entity, function() {
 		var b = this.viewBounds;
 		s.x = this.x + b.x - this.pool.screenX;
 		s.y = this.y + b.y;
+
+		if (this.isJumping() || this.isFalling()) {
+			this.view.sprite.frameRate = 26;
+		} else {
+			this.view.sprite.frameRate = 15;
+		}
 	};
 
 	this.release = function() {
@@ -222,6 +228,10 @@ var Minion = Class(Entity, function() {
 
 	this.isFalling = function() {
 		return this.state === STATES.FALLING;
+	};
+
+	this.isJumping = function() {
+		return this.state === STATES.JUMPING;
 	};
 
 	this.isRunning = function() {
@@ -437,7 +447,7 @@ exports = Class(EntityPool, function() {
 		swipeData.elapsed = 0;
 
 		this.forEachActiveEntity(function(minion, i) {
-			var delay = 750 * (MINION_COUNT - minion.poolIndex) / MINION_COUNT;
+			var delay = trapData.delay * (MINION_COUNT - minion.poolIndex) / MINION_COUNT;
 			minion.view.showBubble(minion, delay);
 		}, this);
 	};
