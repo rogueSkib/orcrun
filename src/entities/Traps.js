@@ -13,6 +13,8 @@ var AXE_TIME = 675;
 
 var gameView;
 var PI = Math.PI;
+var cos = Math.cos;
+var sin = Math.sin;
 var choose = utils.choose;
 var rollFloat = utils.rollFloat;
 var rollInt = utils.rollInt;
@@ -31,6 +33,7 @@ var Trap = Class(Entity, function() {
 		if (this.id === "axe") {
 			var avs = this.view.style;
 			this.y = platforms.y - minions.getHeight() / 2 - avs.height;
+			this.initialHitY = this.hitBounds.y;
 			avs.r = -0.4 * PI;
 			avs.anchorX = avs.width / 2;
 			avs.anchorY = 0;
@@ -47,6 +50,14 @@ var Trap = Class(Entity, function() {
 
 	this.update = function(dt) {
 		sup.update.call(this, dt);
+
+		// update axe hit bounds based on view rotation
+		if (this.id === "axe") {
+			var hb = this.hitBounds;
+			var avs = this.view.style;
+			hb.x = avs.anchorX + (this.initialHitY - avs.anchorX) * cos(avs.r + PI / 2);
+			hb.y = avs.anchorY + (this.initialHitY - avs.anchorY) * sin(avs.r + PI / 2);
+		}
 
 		var vb = this.viewBounds;
 		if (this.x + vb.x + vb.h < gameView.minions.screenX) {

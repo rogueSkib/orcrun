@@ -145,6 +145,8 @@ exports = Class(EntityPool, function() {
 		sup.update.call(this, dt);
 
 		this.screenX += dt * minionConfig.vx;
+
+		this.onAllPoolCollisions(gameView.traps, this.onTrapped, this);
 	};
 
 	this.onSwipe = function(swipeType) {
@@ -155,6 +157,10 @@ exports = Class(EntityPool, function() {
 				minion.state.onSwipe(minion, swipeType);
 			}, delay);
 		}, this);
+	};
+
+	this.onTrapped = function(minion, trap) {
+		minion.setState(STATES.DEAD);
 	};
 
 	this.getLeadMinion = function(alive) {
