@@ -20,14 +20,14 @@ exports = {
 	inputMoveMultiplier: 1,
 	types: [
 		{
-			id: "fighter",
-			url: MINION_URL + "fighter/fighter",
+			id: "mage",
+			url: MINION_URL + "mage/mage",
 			defense: {
-				x: 140,
-				y: 56,
-				width: 124,
-				height: 177,
-				url: MINION_URL + "fighter/shield"
+				x: 175,
+				y: 35,
+				width: 109,
+				height: 181,
+				url: MINION_URL + "mage/hand"
 			},
 			offense: {
 				x: -60,
@@ -41,10 +41,10 @@ exports = {
 			id: "rogue",
 			url: MINION_URL + "rogue/rogue",
 			defense: {
-				x: 140,
-				y: 56,
-				width: 124,
-				height: 177,
+				x: 55,
+				y: 75,
+				width: 196,
+				height: 145,
 				url: MINION_URL + "rogue/slash"
 			},
 			offense: {
@@ -56,14 +56,14 @@ exports = {
 			}
 		},
 		{
-			id: "mage",
-			url: MINION_URL + "mage/mage",
+			id: "fighter",
+			url: MINION_URL + "fighter/fighter",
 			defense: {
 				x: 140,
 				y: 56,
 				width: 124,
 				height: 177,
-				url: MINION_URL + "mage/hand"
+				url: MINION_URL + "fighter/shield"
 			},
 			offense: {
 				x: -60,

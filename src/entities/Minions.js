@@ -430,7 +430,7 @@ exports = Class(EntityPool, function() {
 	};
 
 	this.getMinionOffsetX = function(i) {
-		return MINION_OFFSET_X * (MINION_COUNT - i) / MINION_COUNT - 0.9 * MINION_WIDTH;
+		return MINION_OFFSET_X * (MINION_COUNT - i) / MINION_COUNT - 0.8 * MINION_WIDTH;
 	};
 
 	this.getWidth = function() {

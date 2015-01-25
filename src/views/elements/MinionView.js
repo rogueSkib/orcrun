@@ -62,6 +62,7 @@ exports = Class(View, function() {
 			autoStart: false
 		});
 		this.defense.style.visible = false;
+		this.defense.style.compositeOperation = minion.id === "rogue" ? "lighter" : "";
 
 		this.offense.updateOpts(data.offense);
 		this.offense.resetAllAnimations({
@@ -71,5 +72,6 @@ exports = Class(View, function() {
 			autoStart: false
 		});
 		this.offense.style.visible = false;
+		this.offense.style.compositeOperation = "lighter";
 	};
 });
