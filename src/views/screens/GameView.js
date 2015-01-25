@@ -38,6 +38,8 @@ exports = Class(View, function(supr) {
 
 		this.rootView = new View({
 			parent: this,
+			anchorX: s.width / 2,
+			anchorY: s.height / 2,
 			width: s.width,
 			height: s.height,
 			canHandleEvents: false,
@@ -137,6 +139,10 @@ exports = Class(View, function(supr) {
 
 	this.emitChickenDeath = function(trap) {
 		particles.emitFeathers(this.pEngine, trap);
+	};
+
+	this.emitScreenShake = function() {
+		particles.shakeScreen(this.rootView);
 	};
 
 	this.onGameOver = function() {

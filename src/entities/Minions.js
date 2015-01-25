@@ -101,13 +101,19 @@ var Minion = Class(Entity, function() {
 
 	this.release = function() {
 		if (this.deathTrap.id === "hole") {
-			setTimeout(bind(this, sup.release), 1000);
+			setTimeout(bind(this, function() {
+				gameView.emitScreenShake();
+				sup.release.call(this);
+			}), 1000);
 		} else if (this.deathTrap.id === "axe") {
+			gameView.emitScreenShake();
 			sup.release.call(this);
 		} else if (this.deathTrap.id === "chicken") {
+			gameView.emitScreenShake();
 			sup.release.call(this);
 			this.deathTrap.release(true);
 		} else if (this.deathTrap.id === "beholder") {
+			gameView.emitScreenShake();
 			sup.release.call(this);
 			this.deathTrap.release(true);
 		}

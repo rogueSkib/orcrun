@@ -159,10 +159,10 @@ exports.emitEpicExplosion = function(engine, entity) {
 
 exports.shakeScreen = function(rootView) {
 	// shake timing
-	var ttl = 1000;
+	var ttl = 750;
 	var dt = ttl / 16;
 	// shake magnitude
-	var m = 1.75;
+	var m = 1.4;
 	var x = rootView.style.x;
 	var y = rootView.style.y;
 	var s = rootView.style.scale;
