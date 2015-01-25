@@ -106,10 +106,10 @@ var Minion = Class(Entity, function() {
 			sup.release.call(this);
 		} else if (this.deathTrap.id === "chicken") {
 			sup.release.call(this);
-			this.deathTrap.release();
+			this.deathTrap.release(true);
 		} else if (this.deathTrap.id === "beholder") {
 			sup.release.call(this);
-			this.deathTrap.release();
+			this.deathTrap.release(true);
 		}
 	};
 
@@ -341,12 +341,12 @@ exports = Class(EntityPool, function() {
 			if (trap.id === "chicken") {
 				if (minion.isDefending()) {
 					shouldDie = false;
-					trap.release();
+					trap.release(true);
 				}
 			} else if (trap.id === "beholder") {
 				if (minion.isCharging() && !trap.enraged) {
 					shouldDie = false;
-					trap.release();
+					trap.release(true);
 				}
 			}
 

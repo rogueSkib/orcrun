@@ -18,6 +18,7 @@ var Z_BG = 1;
 var Z_PLATFORMS = 40;
 var Z_MINIONS = 50;
 var Z_TRAPS = 60;
+var Z_PARTICLES = 70;
 
 var model;
 var controller;
@@ -73,7 +74,8 @@ exports = Class(View, function(supr) {
 		});
 
 		this.pEngine = new ParticleEngine({
-			parent: this.rootView
+			parent: this.rootView,
+			zIndex: Z_PARTICLES
 		});
 
 		this.input = new Input({
@@ -118,14 +120,23 @@ exports = Class(View, function(supr) {
 		this.parallax.update(-this.minions.screenX, 0);
 
 		this.pEngine.runTick(dt);
+		this.pEngine.style.x = -this.minions.screenX;
 
 		if (dt && !this.minions.getLeadMinion(true)) {
 			this.onGameOver();
 		}
 	};
 
-	this.emitCannonShot = function() {
+	this.emitCannonShot = function(trap) {
+		particles.emitExplosion(this.pEngine, trap);
+	};
 
+	this.emitTrapDeath = function(trap) {
+		particles.emitExplosion(this.pEngine, trap);
+	};
+
+	this.emitChickenDeath = function(trap) {
+		particles.emitFeathers(this.pEngine, trap);
 	};
 
 	this.onGameOver = function() {

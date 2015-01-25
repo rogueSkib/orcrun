@@ -67,12 +67,13 @@ exports = Class(View, function() {
 	};
 
 	this.fire = function(trap) {
-		gameView.emitCannonShot();
 		this.chicken.style.visible = false;
 
 		trap.x = gameView.minions.screenX + this.style.x;
 		trap.y -= trap.view.sprite.style.height;
 		trap.vx = -1;
 		trap.view.startSprite();
+
+		gameView.emitCannonShot(trap);
 	};
 });

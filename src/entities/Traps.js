@@ -53,7 +53,18 @@ var Trap = Class(Entity, function() {
 
 		var vb = this.viewBounds;
 		if (this.x + vb.x + vb.w < gameView.minions.screenX - BG_WIDTH) {
-			this.release();
+			this.release(false);
+		}
+	};
+
+	this.release = function(onDeath) {
+		sup.release.call(this);
+
+		if (onDeath) {
+			gameView.emitTrapDeath(this);
+			if (this.id === "chicken") {
+				gameView.emitChickenDeath(this);
+			}
 		}
 	};
 });
