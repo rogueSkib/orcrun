@@ -2,6 +2,7 @@ import animate;
 import ui.View as View;
 import ui.ImageView as ImageView;
 import ui.ParticleEngine as ParticleEngine;
+import ui.ScoreView as ScoreView;
 import parallax.Parallax as Parallax;
 
 import src.conf.parallaxConfig as parallaxConfig;
@@ -44,6 +45,29 @@ exports = Class(View, function(supr) {
 			height: s.height,
 			canHandleEvents: false,
 			blockEvents: true
+		});
+
+		this.scoreView = new ScoreView({
+			parent: this,
+			x: s.width - 100,
+			y: 0,
+			width: 100,
+			height: 64,
+			text: "0",
+			spacing: -8,
+			textAlign: "right",
+			characterData: {
+				"0": { image: "resources/images/game/0.png" },
+				"1": { image: "resources/images/game/1.png" },
+				"2": { image: "resources/images/game/2.png" },
+				"3": { image: "resources/images/game/3.png" },
+				"4": { image: "resources/images/game/4.png" },
+				"5": { image: "resources/images/game/5.png" },
+				"6": { image: "resources/images/game/6.png" },
+				"7": { image: "resources/images/game/7.png" },
+				"8": { image: "resources/images/game/8.png" },
+				"9": { image: "resources/images/game/9.png" }
+			}
 		});
 
 		this.minions = new Minions({
@@ -100,6 +124,7 @@ exports = Class(View, function(supr) {
 		model.gameOver = false;
 		model.gameStarted = true;
 
+		this.scoreView.setText(0);
 		this.pEngine.killAllParticles();
 		this.minions.reset();
 		this.platforms.reset();
@@ -127,6 +152,11 @@ exports = Class(View, function(supr) {
 		if (dt && !this.minions.getLeadMinion(true)) {
 			this.onGameOver();
 		}
+	};
+
+	this.onScore = function() {
+		model.score++;
+		this.scoreView.setText(model.score);
 	};
 
 	this.emitMinionDeath = function(minion, trap) {

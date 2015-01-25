@@ -69,7 +69,7 @@ exports = Class(View, function() {
 			as.visible = true;
 			as.compositeOperation = "lighter";
 			this.aura.setImage(config.aura);
-			trap.y = platforms.y - s.height;
+			trap.y = platforms.y - 0.9 * s.height;
 
 			animate(this).wait(BEHOLDER_TIME)
 			.then(bind(this, 'onBeholderAttack', trap));

@@ -1,4 +1,6 @@
+import animate;
 import ui.View as View;
+import ui.ImageView as ImageView;
 import ui.SpriteView as SpriteView;
 
 import src.conf.minionConfig as minionConfig;
@@ -6,6 +8,12 @@ import src.conf.minionConfig as minionConfig;
 var MINION_WIDTH = minionConfig.viewBounds.w;
 var MINION_HEIGHT = minionConfig.viewBounds.h;
 var MINION_TYPES = minionConfig.types;
+var Q_WIDTH = 88;
+var Q_HEIGHT = 86;
+var CMD_WIDTH = 261;
+var CMD_HEIGHT = 165;
+var BUB_TIME = 400;
+var BUB_URL = "resources/images/game/";
 
 var gameView;
 
@@ -36,6 +44,14 @@ exports = Class(View, function() {
 			parent: this,
 			width: MINION_WIDTH,
 			height: MINION_HEIGHT
+		});
+
+		this.bubble = new ImageView({
+			parent: this,
+			x: MINION_WIDTH / 2,
+			y: MINION_HEIGHT / 4,
+			width: Q_WIDTH,
+			height: Q_HEIGHT
 		});
 	};
 
@@ -76,6 +92,9 @@ exports = Class(View, function() {
 		});
 		this.offense.style.visible = false;
 		this.offense.style.compositeOperation = "lighter";
+
+		animate(this.bubble).clear();
+		this.hideBubble(true);
 	};
 
 	this.onPolymorph = function() {
@@ -87,5 +106,60 @@ exports = Class(View, function() {
 			loop: true,
 			autoStart: true
 		});
+	};
+
+	this.showBubble = function(minion, delay) {
+		var bs = this.bubble.style;
+		bs.scale = 0;
+
+		animate(this.bubble).clear()
+		.wait(delay)
+		.then(bind(this, function() {
+			var command = gameView.minions.getCommand(minion);
+			if (command) {
+				bs.x = MINION_WIDTH / 2;
+				bs.y = -0.125 * MINION_HEIGHT;
+				bs.anchorX = 61;
+				bs.anchorY = 137;
+				bs.width = CMD_WIDTH;
+				bs.height = CMD_HEIGHT;
+				var img = BUB_URL;
+				if (command === "up") {
+					img += "callout_jump.png";
+				} else if (command === "down") {
+					img += "callout_slide.png";
+				} else if (command === "left") {
+					img += "callout_defend.png";
+				} else if (command === "right") {
+					img += "callout_rush.png";
+				}
+				this.bubble.setImage(img);
+			} else {
+				bs.x = 0.625 * MINION_WIDTH;
+				bs.y = 0.125 * MINION_HEIGHT;
+				bs.anchorX = 24;
+				bs.anchorY = 72;
+				bs.width = Q_WIDTH;
+				bs.height = Q_HEIGHT;
+				this.bubble.setImage(BUB_URL + "callout_question.png");
+			}
+		}))
+		.then({ scale: 1.2 }, BUB_TIME / 2, animate.easeOut)
+		.then({ scale: 1 }, BUB_TIME / 3, animate.easeIn)
+		.then({ scale: 0.9 }, BUB_TIME / 6, animate.easeOut)
+		.then({ scale: 1 }, BUB_TIME / 6, animate.easeIn)
+		.wait(BUB_TIME)
+		.then(bind(this, 'hideBubble', false));
+	};
+
+	this.hideBubble = function(instant) {
+		var delay = BUB_TIME;
+		if (instant) {
+			delay = 0;
+		}
+
+		animate(this.bubble)
+		.now({ scale: 1.2 }, delay / 6, animate.easeOut)
+		.then({ scale: 0 }, 5 * delay / 6, animate.easeIn);
 	};
 });

@@ -17,11 +17,15 @@ var MINION_SLIDE_TIME = 1500;
 var MINION_DEFEND_TIME = 1500;
 var MINION_CHARGE_TIME = 1000;
 var MINION_CHARGE_FADE = 100;
-var MINION_CHARGE_VX = 1.1;
+var MINION_CHARGE_VX = 1.25;
 var MINION_DEATH_SHAKE = 1.4;
 
 var gameView;
 var chargeData = { vx: 0 };
+var swipeData = {
+	nextType: "",
+	elapsed: 0
+};
 
 var abs = Math.abs;
 var min = Math.min;
@@ -36,7 +40,7 @@ var Minion = Class(Entity, function() {
 	this.init = function(opts) {
 		this.state = STATES.FALLING;
 
-		sup.init.call(this, opts);
+		sup.init.call(this, merge({ gameView: gameView }, opts));
 	};
 
 	this.reset = function(x, y, config) {
@@ -44,6 +48,12 @@ var Minion = Class(Entity, function() {
 		this.offsetX = x;
 		this.shouldFall = false;
 		this.deathTrap = null;
+
+		chargeData = { vx: 0 };
+		swipeData = {
+			nextType: "",
+			elapsed: 0
+		};
 
 		if (this.swipeTimeout) {
 			clearTimeout(this.swipeTimeout);
@@ -357,11 +367,22 @@ exports = Class(EntityPool, function() {
 		sup.update.call(this, dt);
 
 		this.screenX += dt * (this.screenV + chargeData.vx);
+		swipeData.elapsed += dt;
 
 		this.onAllPoolCollisions(gameView.traps, this.onTrapped, this);
 	};
 
 	this.onSwipe = function(swipeType, onDeath) {
+		// score for correct swipes
+		if (!onDeath && swipeType === swipeData.nextType && swipeData.elapsed >= 500) {
+			swipeData.nextType = "";
+			gameView.onScore();
+
+			this.forEachActiveEntity(function(minion, i) {
+				minion.view.hideBubble();
+			}, this);
+		}
+
 		this.forEachActiveEntity(function(minion, i) {
 			var delay = 0;
 			if (swipeType === "up" || swipeType === "down") {
@@ -386,6 +407,16 @@ exports = Class(EntityPool, function() {
 		}, this);
 	};
 
+	this.onTrapSpawn = function(trapData) {
+		swipeData.nextType = trapData.swipeType;
+		swipeData.elapsed = 0;
+
+		this.forEachActiveEntity(function(minion, i) {
+			var delay = 750 * (MINION_COUNT - minion.poolIndex) / MINION_COUNT;
+			minion.view.showBubble(minion, delay);
+		}, this);
+	};
+
 	this.onTrapped = function(minion, trap) {
 		if (minion.isAlive()) {
 			var shouldDie = true;
@@ -407,6 +438,11 @@ exports = Class(EntityPool, function() {
 				this.onSwipe(trap.swipeType, true);
 			}
 		}
+	};
+
+	this.getCommand = function(minion) {
+		var lead = this.getLeadMinion(true);
+		return minion === lead ? swipeData.nextType : "";
 	};
 
 	this.getLeadMinion = function(alive) {

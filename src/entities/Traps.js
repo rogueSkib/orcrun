@@ -123,6 +123,8 @@ exports = Class(EntityPool, function() {
 			width = tvs.width;
 		}
 
+		gameView.minions.onTrapSpawn(option);
+
 		// return the next spawn x
 		var gap = rollFloat(option.gapRange[0], option.gapRange[1]);
 		return width + gap;
