@@ -9,6 +9,7 @@ import src.effects.particles as particles;
 import src.entities.Minions as Minions;
 import src.entities.Platforms as Platforms;
 import src.entities.Traps as Traps;
+import src.views.elements.ChickenCannon as ChickenCannon;
 import src.views.elements.Input as Input;
 
 var BG_WIDTH = G_BG_WIDTH;
@@ -60,6 +61,12 @@ exports = Class(View, function(supr) {
 			zIndex: Z_TRAPS
 		});
 
+		this.chickenCannon = new ChickenCannon({
+			parent: this.rootView,
+			gameView: this,
+			zIndex: Z_TRAPS
+		});
+
 		this.parallax = new Parallax({
 			parent: this.rootView,
 			gameView: this
@@ -93,6 +100,7 @@ exports = Class(View, function(supr) {
 		this.minions.reset();
 		this.platforms.reset();
 		this.traps.reset();
+		this.chickenCannon.reset();
 		this.parallax.reset(parallaxConfig[model.levelID]);
 		this.input.reset();
 		this.tick(0);
@@ -114,6 +122,10 @@ exports = Class(View, function(supr) {
 		if (dt && !this.minions.getLeadMinion(true)) {
 			this.onGameOver();
 		}
+	};
+
+	this.emitCannonShot = function() {
+
 	};
 
 	this.onGameOver = function() {

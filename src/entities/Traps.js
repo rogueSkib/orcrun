@@ -1,15 +1,14 @@
-import animate;
 import ui.View as View;
 import entities.Entity as Entity;
 import entities.EntityPool as EntityPool;
 
 import src.conf.trapConfig as trapConfig;
 import src.lib.utils as utils;
+import src.views.elements.TrapView as TrapView;
 
 var BG_WIDTH = G_BG_WIDTH;
 var BG_HEIGHT = G_BG_HEIGHT;
 var TRAP_TIME = 600;
-var AXE_TIME = 675;
 
 var gameView;
 var PI = Math.PI;
@@ -22,33 +21,22 @@ var rollInt = utils.rollInt;
 var Trap = Class(Entity, function() {
 	var sup = Entity.prototype;
 	this.name = "Trap";
+	this.viewClass = TrapView;
+
+	this.init = function(opts) {
+		sup.init.call(this, merge({ gameView: gameView }, opts));
+	};
 
 	this.reset = function(x, y, config) {
 		this.id = config.id;
 		this.swipeType = config.swipeType;
 
-		animate(this.view).clear();
-
 		sup.reset.call(this, x, y, config);
+	};
 
-		var platforms = gameView.platforms;
-		var minions = gameView.minions;
-		if (this.id === "axe") {
-			var avs = this.view.style;
-			this.y = platforms.y - minions.getHeight() / 2 - avs.height;
-			this.initialHitY = this.hitBounds.y;
-			avs.r = -0.4 * PI;
-			avs.anchorX = avs.width / 2;
-			avs.anchorY = 0;
-
-			animate(this.view).wait(2 * AXE_TIME)
-			.now({ r: 0 }, AXE_TIME, animate.easeIn)
-			.then({ r: 0.35 * PI }, AXE_TIME, animate.easeOut)
-			.then({ r: 0 }, AXE_TIME, animate.easeIn)
-			.then({ r: -0.35 * PI }, AXE_TIME, animate.easeOut)
-			.then({ r: 0 }, AXE_TIME, animate.easeIn)
-			.then({ r: 0.35 * PI }, AXE_TIME, animate.easeOut);
-		}
+	this.resetView = function(config) {
+		sup.resetView.call(this, config);
+		this.view.reset(this, config);
 	};
 
 	this.update = function(dt) {

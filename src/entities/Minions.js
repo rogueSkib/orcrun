@@ -13,6 +13,7 @@ var MINION_OFFSET_Y = 300;
 var MINION_COUNT = 3;
 var MINION_JUMP_VY = -0.8;
 var MINION_SLIDE_TIME = 1500;
+var MINION_DEFEND_TIME = 1500;
 
 var gameView;
 var abs = Math.abs;
@@ -36,6 +37,11 @@ var Minion = Class(Entity, function() {
 		this.shouldFall = false;
 		this.deathTrap = null;
 
+		if (this.swipeTimeout) {
+			clearTimeout(this.swipeTimeout);
+		}
+		this.swipeTimeout = null;
+
 		this.setState(STATES.FALLING);
 
 		sup.reset.call(this, x, y, config);
@@ -50,7 +56,11 @@ var Minion = Class(Entity, function() {
 		sup.update.call(this, dt);
 
 		this.shouldFall = false;
-		if (this.y > this.yPrev && !this.isFalling() && !this.isSliding()) {
+		if (this.y > this.yPrev
+			&& !this.isFalling()
+			&& !this.isSliding()
+			&& !this.isDefending())
+		{
 			this.shouldFall = true;
 		}
 
@@ -84,6 +94,9 @@ var Minion = Class(Entity, function() {
 			setTimeout(bind(this, sup.release), 1000);
 		} else if (this.deathTrap.id === "axe") {
 			sup.release.call(this);
+		} else if (this.deathTrap.id === "chicken") {
+			sup.release.call(this);
+			this.deathTrap.release();
 		}
 	};
 
@@ -94,7 +107,10 @@ var Minion = Class(Entity, function() {
 		if (this.y < y) {
 			this.vy = 0;
 			this.shouldFall = false;
-			if (!this.isSliding() && !this.isRunning()) {
+			if (!this.isRunning()
+				&& !this.isSliding()
+				&& !this.isDefending())
+			{
 				this.setState(STATES.RUNNING);
 			}
 		}
@@ -108,6 +124,10 @@ var Minion = Class(Entity, function() {
 
 	this.isAlive = function() {
 		return this.state !== STATES.DEAD;
+	};
+
+	this.isDefending = function() {
+		return this.state === STATES.DEFENDING;
 	};
 
 	this.isFalling = function() {
@@ -126,6 +146,36 @@ var Minion = Class(Entity, function() {
 
 
 var STATES = exports.STATES = {
+	DEFENDING: {
+		id: "DEFENDING",
+		onStateSet: function(minion) {
+			minion.view.style.scaleX = 0.5;
+
+			setTimeout(function() {
+				if (minion.isDefending()) {
+					minion.setState(STATES.RUNNING);
+				}
+			}, MINION_DEFEND_TIME);
+		},
+		onSwipe: function(minion, swipeType) {
+			if (swipeType === "up") {
+				minion.setState(STATES.JUMPING);
+			} else if (swipeType === "down") {
+				minion.setState(STATES.SLIDING);
+			}
+		},
+		onStateEnd: function(minion) {
+			minion.view.style.scaleX = 1;
+		}
+	},
+	DEAD: {
+		id: "DEAD",
+		onStateSet: function(minion) {
+			minion.release();
+		},
+		onSwipe: function(minion, swipeType) {},
+		onStateEnd: function(minion) {}
+	},
 	FALLING: {
 		id: "FALLING",
 		onStateSet: function(minion) {},
@@ -148,6 +198,8 @@ var STATES = exports.STATES = {
 				minion.setState(STATES.JUMPING);
 			} else if (swipeType === "down") {
 				minion.setState(STATES.SLIDING);
+			} else if (swipeType === "left") {
+				minion.setState(STATES.DEFENDING);
 			}
 		},
 		onStateEnd: function(minion) {}
@@ -170,6 +222,8 @@ var STATES = exports.STATES = {
 		onSwipe: function(minion, swipeType) {
 			if (swipeType === "up") {
 				minion.setState(STATES.JUMPING);
+			} else if (swipeType === "left") {
+				minion.setState(STATES.DEFENDING);
 			}
 		},
 		onStateEnd: function(minion) {
@@ -179,14 +233,6 @@ var STATES = exports.STATES = {
 			minion.view.style.anchorY = 0;
 			minion.view.style.scaleY = 1;
 		}
-	},
-	DEAD: {
-		id: "DEAD",
-		onStateSet: function(minion) {
-			minion.release();
-		},
-		onSwipe: function(minion, swipeType) {},
-		onStateEnd: function(minion) {}
 	}
 };
 
@@ -230,7 +276,16 @@ exports = Class(EntityPool, function() {
 			var offset = onDeath ? -1 : 0;
 			var dist = (minion.poolIndex + offset) * MINION_OFFSET_X / MINION_COUNT;
 			var delay = dist / minion.vx;
-			setTimeout(function() {
+			if (swipeType === "left" || swipeType === "right") {
+				delay /= 3;
+			}
+			// clear incorrect swipes on death
+			if (onDeath && minion.swipeTimeout) {
+				clearTimeout(minion.swipeTimeout);
+			}
+			// delay following minions actions
+			minion.swipeTimeout = setTimeout(function() {
+				minion.swipeTimeout = null;
 				minion.state.onSwipe(minion, swipeType);
 			}, max(0, delay));
 		}, this);
@@ -238,9 +293,18 @@ exports = Class(EntityPool, function() {
 
 	this.onTrapped = function(minion, trap) {
 		if (minion.isAlive()) {
-			minion.deathTrap = trap;
-			minion.setState(STATES.DEAD);
-			this.onSwipe(trap.swipeType, true);
+			var shouldDie = true;
+			if (trap.id === "chicken") {
+				if (minion.isDefending()) {
+					shouldDie = false;
+				}
+			}
+
+			if (shouldDie) {
+				minion.deathTrap = trap;
+				minion.setState(STATES.DEAD);
+				this.onSwipe(trap.swipeType, true);
+			}
 		}
 	};
 

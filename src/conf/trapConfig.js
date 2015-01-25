@@ -20,6 +20,19 @@ exports = {
 			viewBounds: { x: 0, y: 0, w: 338, h: 490 },
 			gapRange: [0.8 * BG_WIDTH, 1.2 * BG_WIDTH],
 			image: TRAP_URL + "lair/trap_axe.png"
+		},
+		{
+			id: "chicken",
+			swipeType: "left",
+			needsView: true,
+			isCircle: true,
+			hitBounds: { x: 80, y: 75, r: 75 },
+			viewBounds: { x: 0, y: 0, w: 389, h: 120 },
+			gapRange: [0.8 * BG_WIDTH, 1.2 * BG_WIDTH],
+			url: TRAP_URL + "lair/chicken",
+			defaultAnimation: "fly",
+			autoStart: false,
+			loop: true
 		}
 	]
 };
