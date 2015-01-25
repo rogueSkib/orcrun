@@ -3,10 +3,10 @@ var controller = G_CONTROLLER;
 var app = GC.Application;
 var weeby = null;
 
-if (G_WEEBY_ENABLED) {
-	weeby = jsio('import weeby');
-	app = weeby.Application;
-}
+// if (G_WEEBY_ENABLED) {
+// 	weeby = jsio('import weeby');
+// 	app = weeby.Application;
+// }
 
 exports = Class(app, function(supr) {
 	this.initUI = function() {
