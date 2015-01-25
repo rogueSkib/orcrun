@@ -64,6 +64,8 @@ var Trap = Class(Entity, function() {
 			gameView.emitTrapDeath(this);
 			if (this.id === "chicken") {
 				gameView.emitChickenDeath(this);
+			} else if (this.id === "beholder") {
+				gameView.emitBeholderDeath(this);
 			}
 		}
 	};

@@ -141,6 +141,10 @@ exports = Class(View, function(supr) {
 		particles.emitFeathers(this.pEngine, trap);
 	};
 
+	this.emitBeholderDeath = function(trap) {
+		particles.emitEyeStalks(this.pEngine, trap);
+	};
+
 	this.emitPlatformDust = function(plat) {
 		particles.emitPlatformDust(this.pEngine, plat);
 		particles.emitPlatformGravel(this.pEngine, plat);

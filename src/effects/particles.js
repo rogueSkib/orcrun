@@ -32,14 +32,13 @@ exports.emitExplosion = function(engine, entity) {
 	var count = entity.id === "chicken" ? 8 : 16;
 	var data = engine.obtainParticleArray(count);
 	var hb = entity.hitBounds;
-	// define each particles trajectory
 	for (var i = 0; i < count; i++) {
 		var p = data[i];
 		var ttl = rollFloat(350, 500);
 		var stop = -1000 / ttl;
 		var size = rollFloat(80, 120);
-		var x = entity.x + hb.x + (hb.w - size) / 2;
-		var y = entity.y + hb.y + (hb.h - size) / 2;
+		var x = entity.x + hb.x - size / 2;
+		var y = entity.y + hb.y - size / 2;
 		p.polar = true;
 		p.ox = x + rollFloat(-65, 65);
 		p.oy = y + rollFloat(-65, 65);
@@ -69,15 +68,14 @@ exports.emitFeathers = function(engine, entity) {
 	var count = 9;
 	var data = engine.obtainParticleArray(count);
 	var hb = entity.hitBounds;
-	// define each particles trajectory
 	for (var i = 0; i < count; i++) {
 		var p = data[i];
 		var ttl = rollFloat(750, 1500);
 		var stop = -1000 / ttl;
 		var w = 34;
 		var h = 15;
-		var x = entity.x + hb.x + (hb.w - w) / 2;
-		var y = entity.y + hb.y + (hb.h - h) / 2;
+		var x = entity.x + hb.x - w / 2;
+		var y = entity.y + hb.y - h / 2;
 		p.polar = true;
 		p.ox = x;
 		p.oy = y;
@@ -109,7 +107,6 @@ exports.emitPlatformDust = function(engine, entity) {
 	var count = 7;
 	var data = engine.obtainParticleArray(count);
 	var hb = entity.hitBounds;
-	// define each particles trajectory
 	for (var i = 0; i < count; i++) {
 		var p = data[i];
 		var delay = rollFloat(0, 500);
@@ -131,6 +128,7 @@ exports.emitPlatformDust = function(engine, entity) {
 		p.scale = rollFloat(0.25, 1);
 		p.dscale = stop * p.scale;
 		p.ddopacity = 2 * stop;
+		p.delay = delay;
 		p.ttl = ttl;
 		p.image = choose(DUST_IMAGES);
 		p.compositeOperation = "lighter";
@@ -142,7 +140,6 @@ exports.emitPlatformGravel = function(engine, entity) {
 	var count = 7;
 	var data = engine.obtainParticleArray(count);
 	var hb = entity.hitBounds;
-	// define each particles trajectory
 	for (var i = 0; i < count; i++) {
 		var p = data[i];
 		var delay = rollFloat(0, 500);
@@ -165,8 +162,40 @@ exports.emitPlatformGravel = function(engine, entity) {
 		p.width = size;
 		p.height = size;
 		p.dscale = 0.8 * stop * p.scale;
+		p.delay = delay;
 		p.ttl = ttl;
 		p.image = "resources/images/game/levels/lair/ball_boulder.png";
+	}
+	engine.emitParticles(data);
+};
+
+exports.emitEyeStalks = function(engine, entity) {
+	var count = 4;
+	var data = engine.obtainParticleArray(count);
+	var hb = entity.hitBounds;
+	for (var i = 0; i < count; i++) {
+		var p = data[i];
+		var ttl = 2000;
+		var stop = -1000 / ttl;
+		var size = rollFloat(80, 120);
+		var x = entity.x + hb.x - size / 2;
+		var y = entity.y + hb.y - size / 2 - 50;
+		p.x = x + rollFloat(-hb.r, hb.r);
+		p.dx = rollFloat(-800, 800);
+		p.ddx = stop * p.dx;
+		p.y = y + rollFloat(-hb.r, hb.r);
+		p.dy = rollFloat(-750, -250);
+		p.ddy = 1000;
+		p.r = TAU * random();
+		p.dr = rollFloat(-20, 20);
+		p.ddr = stop * p.dr;
+		p.anchorX = size / 2;
+		p.anchorY = size / 2;
+		p.width = size;
+		p.height = size;
+		p.ddopacity = stop;
+		p.ttl = ttl;
+		p.image = "resources/images/game/levels/lair/particleBeholder" + (i + 1) + ".png";
 	}
 	engine.emitParticles(data);
 };
@@ -181,7 +210,6 @@ exports.emitEpicExplosion = function(engine, entity) {
 	var hb = entity.hitBounds;
 	var x = entity.x + hb.x + (hb.w - size) / 2;
 	var y = entity.y + hb.y + (hb.h - size) / 2;
-	// define each particles trajectory
 	for (var i = 0; i < count; i++) {
 		var p = data[i];
 		p.polar = true;
@@ -229,11 +257,18 @@ exports.emitEpicExplosion = function(engine, entity) {
 };
 
 exports.shakeScreen = function(rootView, m) {
+	animate(rootView, 'shake').commit();
+
 	var ttl = 750;
 	var dt = ttl / 16;
-	var x = rootView.style.x;
-	var y = rootView.style.y;
-	var s = rootView.style.scale;
+	var rvs = rootView.style;
+	rvs.x = 0;
+	rvs.y = 0;
+	rvs.scale = 1;
+
+	var x = rvs.x;
+	var y = rvs.y;
+	var s = rvs.scale;
 	var r1 = TAU * random();
 	var r2 = TAU * random();
 	var r3 = TAU * random();
@@ -249,7 +284,7 @@ exports.shakeScreen = function(rootView, m) {
 	var r13 = TAU * random();
 	var r14 = TAU * random();
 
-	animate(rootView, 'shake').commit()
+	animate(rootView, 'shake')
 	.then({ scale: s * (1 + 0.05 * m) }, dt, animate.easeIn)
 	.then({ x: x + 14 * m * cos(r1), y: y + 14 * m * sin(r1), scale: s * (1 + 0.046 * m) }, dt, animate.easeOut)
 	.then({ x: x + 13 * m * cos(r2), y: y + 13 * m * sin(r2), scale: s * (1 + 0.042 * m) }, dt, animate.easeInOut)

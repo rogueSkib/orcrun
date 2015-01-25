@@ -20,8 +20,8 @@ exports = {
 	inputMoveMultiplier: 1,
 	types: [
 		{
-			id: "hero",
-			url: MINION_URL + "mage/mage"
+			id: "fighter",
+			url: MINION_URL + "fighter/fighter"
 		},
 		{
 			id: "rogue",
