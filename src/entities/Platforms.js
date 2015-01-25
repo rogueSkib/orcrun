@@ -88,10 +88,10 @@ exports = Class(EntityPool, function() {
 	};
 
 	this.update = function(dt) {
-		sup.update.call(this, dt);
-
 		this.view.style.x = -gameView.minions.screenX;
 		this.spawnPlatforms();
+
+		sup.update.call(this, dt);
 	};
 
 	this.spawnPlatforms = function() {

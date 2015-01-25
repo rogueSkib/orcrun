@@ -186,4 +186,12 @@ exports = Class(EntityPool, function() {
 	this.getMinionOffsetX = function(i) {
 		return MINION_OFFSET_X * (MINION_COUNT - i) / MINION_COUNT - MINION_WIDTH;
 	};
+
+	this.getWidth = function() {
+		return MINION_WIDTH;
+	};
+
+	this.getHeight = function() {
+		return MINION_HEIGHT;
+	};
 });
