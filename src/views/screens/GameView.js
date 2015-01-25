@@ -129,6 +129,12 @@ exports = Class(View, function(supr) {
 		}
 	};
 
+	this.emitMinionDeath = function(minion, trap) {
+		if (trap.id === "hole") {
+			particles.emitHoleDeath(this.pEngine, minion);
+		}
+	};
+
 	this.emitCannonShot = function(trap) {
 		particles.emitExplosion(this.pEngine, trap);
 	};
@@ -148,6 +154,10 @@ exports = Class(View, function(supr) {
 	this.emitPlatformDust = function(plat) {
 		particles.emitPlatformDust(this.pEngine, plat);
 		particles.emitPlatformGravel(this.pEngine, plat);
+	};
+
+	this.emitSparksplosion = function(minion) {
+		particles.emitSparksplosion(this.pEngine, minion);
 	};
 
 	this.emitScreenShake = function(magnitude) {

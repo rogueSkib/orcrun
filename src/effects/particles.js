@@ -2,6 +2,8 @@ import animate;
 
 import src.lib.utils as utils;
 
+var BG_WIDTH = G_BG_WIDTH;
+var BG_HEIGHT = G_BG_HEIGHT;
 var PI = Math.PI;
 var TAU = 2 * PI;
 var pow = Math.pow;
@@ -252,6 +254,73 @@ exports.emitEpicExplosion = function(engine, entity) {
 			p.dscale = rollFloat(0.5, 10);
 			p.ttl = ttl;
 		}
+	}
+	engine.emitParticles(data);
+};
+
+exports.emitHoleDeath = function(engine, entity) {
+	var count = 19;
+	var data = engine.obtainParticleArray(count);
+	var hb = entity.hitBounds;
+	for (var i = 0; i < count; i++) {
+		var p = data[i];
+		var ttl = rollFloat(500, 1000);
+		var stop = -1000 / ttl;
+		var size = rollFloat(60, 140);
+		var x = entity.x + hb.x - size / 2;
+		var y = BG_HEIGHT - size / 2;
+		p.x = x + rollFloat(-65, 65);
+		p.dx = rollFloat(0, 750);
+		p.ddx = stop * p.dx;
+		p.y = y + rollFloat(0, 200);
+		p.dy = rollFloat(-1250, -500);
+		p.ddy = 500;
+		p.r = TAU * random();
+		p.dr = rollFloat(-8, 8);
+		p.ddr = stop * p.dr;
+		p.anchorX = size / 2;
+		p.anchorY = size / 2;
+		p.width = size;
+		p.height = size;
+		p.scale = rollFloat(0.75, 2.5);
+		p.dscale = stop * p.scale;
+		p.ttl = ttl;
+		p.image = choose(SMOKE_IMAGES);
+		// the rare, non-blending smoke particle is cool
+		p.compositeOperation = random() < 0.9 ? "lighter" : "";
+	}
+	engine.emitParticles(data);
+};
+
+this.emitSparksplosion = function(engine, entity) {
+	var count = 7;
+	var data = engine.obtainParticleArray(count);
+	var ttl = 500;
+	var stop = -1000 / ttl;
+	var size = 64;
+	var hb = entity.hitBounds;
+	var x = entity.x + hb.x + (hb.w - size) / 2;
+	var y = entity.y + hb.y + (hb.h - size) / 2;
+	for (var i = 0; i < count; i++) {
+		var p = data[i];
+		p.polar = true;
+		p.x = x;
+		p.y = y;
+		p.ox = x;
+		p.oy = y;
+		p.dr = rollFloat(-20, 20);
+		p.anchorX = size / 2;
+		p.anchorY = size / 2;
+		p.width = size;
+		p.height = size;
+		p.radius = 0;
+		p.dradius = rollFloat(300, 900);
+		p.ddradius = stop * p.dradius;
+		p.theta = TAU * random();
+		p.scale = rollFloat(1.25, 2);
+		p.dscale = stop * p.scale;
+		p.ttl = ttl;
+		p.image = "resources/images/game/levels/lair/particleStar.png";
 	}
 	engine.emitParticles(data);
 };

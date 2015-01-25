@@ -9,7 +9,21 @@ exports = {
 			swipeType: "up",
 			needsView: false,
 			width: BG_WIDTH / 5,
-			gapRange: [0.75 * BG_WIDTH, 1.25 * BG_WIDTH]
+			gapRange: [0.6 * BG_WIDTH, 0.8 * BG_WIDTH]
+		},
+		{
+			id: "hole",
+			swipeType: "up",
+			needsView: false,
+			width: BG_WIDTH / 5,
+			gapRange: [0.6 * BG_WIDTH, 0.8 * BG_WIDTH]
+		},
+		{
+			id: "hole",
+			swipeType: "up",
+			needsView: false,
+			width: BG_WIDTH / 5,
+			gapRange: [0.6 * BG_WIDTH, 0.8 * BG_WIDTH]
 		},
 		{
 			id: "axe",

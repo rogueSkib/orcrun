@@ -26,6 +26,7 @@ var chargeData = { vx: 0 };
 var abs = Math.abs;
 var min = Math.min;
 var max = Math.max;
+var sqrt = Math.sqrt;
 
 var Minion = Class(Entity, function() {
 	var sup = Entity.prototype;
@@ -55,6 +56,7 @@ var Minion = Class(Entity, function() {
 	};
 
 	this.resetView = function(config) {
+		animate(this.view, 'spin').clear();
 		sup.resetView.call(this, config);
 		this.view.reset(this);
 	};
@@ -101,38 +103,65 @@ var Minion = Class(Entity, function() {
 	};
 
 	this.release = function() {
+		var mx = this.getHitX() + this.getHitWidth() / 2;
+		var my = this.getHitY() + this.getHitHeight() / 2;
+		var tx = this.deathTrap.id !== "hole" ? this.deathTrap.getHitX() : 0;
+		var ty = this.deathTrap.id !== "hole" ? this.deathTrap.getHitY() : 0;
+		var dx = mx - tx;
+		var dy = my - ty;
+		var dist = sqrt(dx * dx + dy * dy);
+		var nx = dx / dist;
+		var ny = dy / dist;
+
 		if (this.deathTrap.id === "hole") {
 			setTimeout(bind(this, function() {
-				gameView.emitScreenShake(MINION_DEATH_SHAKE);
-				sup.release.call(this);
-			}), 1000);
+				this.onRelease();
+			}), 750);
 		} else if (this.deathTrap.id === "axe") {
-			gameView.emitScreenShake(MINION_DEATH_SHAKE);
-			sup.release.call(this);
+			this.vx = 1.2 * nx;
+			this.vy = -1.2 * abs(ny);
+			var hb = this.hitBounds;
+			this.view.style.anchorX = hb.x + hb.w / 2;
+			this.view.style.anchorY = hb.y + hb.h / 2;
+			animate(this.view, 'spin').now({ scale: 0, dr: 10 }, 1500, animate.easeOut);
+			gameView.emitSparksplosion(this);
+			setTimeout(bind(this, function() {
+				this.onRelease();
+			}), 1500);
 		} else if (this.deathTrap.id === "chicken") {
-			gameView.emitScreenShake(MINION_DEATH_SHAKE);
-			sup.release.call(this);
+			this.vx = -1.25;
+			this.vy = -1.25 * abs(ny);
+			setTimeout(bind(this, function() {
+				this.onRelease();
+			}), 750);
 			this.deathTrap.release(true);
 		} else if (this.deathTrap.id === "beholder") {
-			gameView.emitScreenShake(MINION_DEATH_SHAKE);
-			sup.release.call(this);
+			this.onRelease();
 			this.deathTrap.release(true);
 		}
 	};
 
+	this.onRelease = function() {
+		gameView.emitScreenShake(MINION_DEATH_SHAKE);
+		gameView.emitMinionDeath(this, this.deathTrap);
+		sup.release.call(this);
+	};
+
 	this.onPlatformCollide = function(platform) {
-		var x = this.x;
-		var y = this.y;
-		this.resolveCollidingStateWith(platform);
-		if (this.y < y) {
-			this.vy = 0;
-			this.shouldFall = false;
-			if (!this.isRunning()
-				&& !this.isSliding()
-				&& !this.isDefending()
-				&& !this.isCharging())
-			{
-				this.setState(STATES.RUNNING);
+		if (this.isAlive()) {
+			var x = this.x;
+			var y = this.y;
+			this.resolveCollidingStateWith(platform);
+			if (this.y < y) {
+				this.vy = 0;
+				this.shouldFall = false;
+				if (!this.isRunning()
+					&& !this.isSliding()
+					&& !this.isDefending()
+					&& !this.isCharging())
+				{
+					this.setState(STATES.RUNNING);
+				}
 			}
 		}
 	};
@@ -174,6 +203,10 @@ var STATES = exports.STATES = {
 	CHARGING: {
 		id: "CHARGING",
 		onStateSet: function(minion) {
+			if (minion.poolIndex === 0) {
+				minion.view.offense.startAnimation('rush');
+			}
+
 			animate(chargeData)
 			.now({ vx: MINION_CHARGE_VX }, MINION_CHARGE_FADE, animate.linear);
 
@@ -185,6 +218,7 @@ var STATES = exports.STATES = {
 		},
 		onSwipe: function(minion, swipeType) {},
 		onStateEnd: function(minion) {
+			minion.view.offense.stopAnimation();
 			animate(chargeData)
 			.now({ vx: 0 }, MINION_CHARGE_FADE, animate.linear);
 		}
@@ -192,7 +226,9 @@ var STATES = exports.STATES = {
 	DEFENDING: {
 		id: "DEFENDING",
 		onStateSet: function(minion) {
-			minion.view.style.scaleX = 0.5;
+			if (minion.poolIndex === 0) {
+				minion.view.defense.startAnimation('block');
+			}
 
 			setTimeout(function() {
 				if (minion.isDefending()) {
@@ -208,7 +244,7 @@ var STATES = exports.STATES = {
 			}
 		},
 		onStateEnd: function(minion) {
-			minion.view.style.scaleX = 1;
+			minion.view.defense.stopAnimation();
 		}
 	},
 	DEAD: {
@@ -255,8 +291,10 @@ var STATES = exports.STATES = {
 			var hb = minion.hitBounds;
 			hb.y += (2 / 3) * hb.h;
 			hb.h = (1 / 3) * hb.h;
-			minion.view.style.anchorY = MINION_HEIGHT;
-			minion.view.style.scaleY = 0.5;
+
+			minion.view.sprite.startAnimation('slide', {
+				iterations: 999999
+			});
 
 			setTimeout(function() {
 				if (minion.isSliding()) {
@@ -275,8 +313,8 @@ var STATES = exports.STATES = {
 			var hb = minion.hitBounds;
 			hb.h = 3 * hb.h;
 			hb.y -= (2 / 3) * hb.h;
-			minion.view.style.anchorY = 0;
-			minion.view.style.scaleY = 1;
+
+			minion.view.sprite.startAnimation('run');
 		}
 	}
 };

@@ -21,15 +21,57 @@ exports = {
 	types: [
 		{
 			id: "fighter",
-			url: MINION_URL + "fighter/fighter"
+			url: MINION_URL + "fighter/fighter",
+			defense: {
+				x: 140,
+				y: 56,
+				width: 124,
+				height: 177,
+				url: MINION_URL + "fighter/shield"
+			},
+			offense: {
+				x: -60,
+				y: 8,
+				width: 347,
+				height: 263,
+				url: MINION_URL + "force"
+			}
 		},
 		{
 			id: "rogue",
-			url: MINION_URL + "rogue/rogue"
+			url: MINION_URL + "rogue/rogue",
+			defense: {
+				x: 140,
+				y: 56,
+				width: 124,
+				height: 177,
+				url: MINION_URL + "rogue/slash"
+			},
+			offense: {
+				x: -60,
+				y: 8,
+				width: 347,
+				height: 263,
+				url: MINION_URL + "force"
+			}
 		},
 		{
 			id: "mage",
-			url: MINION_URL + "mage/mage"
+			url: MINION_URL + "mage/mage",
+			defense: {
+				x: 140,
+				y: 56,
+				width: 124,
+				height: 177,
+				url: MINION_URL + "mage/hand"
+			},
+			offense: {
+				x: -60,
+				y: 8,
+				width: 347,
+				height: 263,
+				url: MINION_URL + "force"
+			}
 		}
 	]
 };
