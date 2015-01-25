@@ -8,9 +8,9 @@ import src.lib.utils as utils;
 
 var BG_WIDTH = G_BG_WIDTH;
 var BG_HEIGHT = G_BG_HEIGHT;
-var PLAT_HEIGHT = 47;
+var PLAT_HEIGHT = 64;
 var Y_MIN = BG_HEIGHT - 3 * PLAT_HEIGHT;
-var Y_MAX = BG_HEIGHT - PLAT_HEIGHT;
+var Y_MAX = BG_HEIGHT - 2 * PLAT_HEIGHT;
 var Z_MAX = 1000000;
 
 var gameView;
@@ -24,6 +24,8 @@ var Platform = Class(Entity, function() {
 	this.name = "Platform";
 
 	this.reset = function(x, y, config) {
+		animate(this).clear();
+
 		sup.reset.call(this, x, y, config);
 
 		this.isAnchored = true;
@@ -39,26 +41,14 @@ var Platform = Class(Entity, function() {
 	};
 
 	this.move = function(dx, dy, dt) {
-		animate(this).now({
-			x: this.x - dx / 8,
-			y: this.y - dy / 8
-		}, dt / 8, animate.easeOut)
-		.then({
-			x: this.x + dx / 8,
-			y: this.y + dy / 8
-		}, dt / 8, animate.easeIn)
-		.then({
-			x: this.x - dx / 5,
-			y: this.y - dy / 5
-		}, dt / 8, animate.easeIn)
-		.then({
-			x: this.x + dx / 5,
-			y: this.y + dy / 5
-		}, dt / 8, animate.easeOut)
-		.then({
-			x: this.x + dx,
-			y: this.y + dy
-		}, dt / 2, animate.easeOut);
+		var x = this.x;
+		var y = this.y;
+		animate(this)
+		.now({ x: x - dx / 12, y: y - dy / 12 }, dt / 6, animate.easeOut)
+		.then({ x: x + dx / 8, y: y + dy / 8 }, dt / 6, animate.easeIn)
+		.then({ x: x - dx / 10, y: y - dy / 10 }, dt / 6, animate.easeIn)
+		.then({ x: x + dx / 6, y: y + dy / 6 }, dt / 6, animate.easeOut)
+		.then({ x: x + dx, y: y + dy }, dt / 3, animate.easeOut);
 	};
 });
 
@@ -120,6 +110,15 @@ exports = Class(EntityPool, function() {
 		return pvs.width + gap;
 	};
 
+	this.onSpawnHole = function(gap, time) {
+		var plat = this.getLastPlatform();
+		this.x += gap;
+		if (this.y > Y_MIN) {
+			this.y -= PLAT_HEIGHT;
+		}
+		plat.move(gap, -PLAT_HEIGHT, time);
+	};
+
 	this.getLastPlatform = function() {
 		var last = null;
 		var xMax = 0;
@@ -132,12 +131,7 @@ exports = Class(EntityPool, function() {
 		return last;
 	};
 
-	this.onSpawnHole = function(gap, time) {
-		var plat = this.getLastPlatform();
-		this.x += gap;
-		if (this.y > Y_MIN) {
-			this.y -= PLAT_HEIGHT;
-		}
-		plat.move(gap, -PLAT_HEIGHT, time);
+	this.getMaxY = function() {
+		return Y_MAX;
 	};
 });

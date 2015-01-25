@@ -8,7 +8,7 @@ import src.lib.utils as utils;
 
 var BG_WIDTH = G_BG_WIDTH;
 var BG_HEIGHT = G_BG_HEIGHT;
-var TRAP_TIME = 500;
+var TRAP_TIME = 600;
 var AXE_TIME = 675;
 
 var gameView;
@@ -25,6 +25,9 @@ var Trap = Class(Entity, function() {
 
 	this.reset = function(x, y, config) {
 		this.id = config.id;
+		this.swipeType = config.swipeType;
+
+		animate(this.view).clear();
 
 		sup.reset.call(this, x, y, config);
 
@@ -38,7 +41,7 @@ var Trap = Class(Entity, function() {
 			avs.anchorX = avs.width / 2;
 			avs.anchorY = 0;
 
-			animate(this.view).clear().wait(2 * AXE_TIME)
+			animate(this.view).wait(2 * AXE_TIME)
 			.now({ r: 0 }, AXE_TIME, animate.easeIn)
 			.then({ r: 0.35 * PI }, AXE_TIME, animate.easeOut)
 			.then({ r: 0 }, AXE_TIME, animate.easeIn)
@@ -85,7 +88,7 @@ exports = Class(EntityPool, function() {
 	this.reset = function() {
 		sup.reset.call(this);
 
-		this.x = 1.5 * BG_WIDTH;
+		this.x = 2 * BG_WIDTH;
 	};
 
 	this.update = function(dt) {

@@ -85,7 +85,7 @@ exports = Class(View, function(supr) {
 
 	this.resetView = function() {
 		model.score = 0;
-		model.levelID = "space";
+		model.levelID = "lair";
 		model.gameOver = false;
 		model.gameStarted = true;
 
