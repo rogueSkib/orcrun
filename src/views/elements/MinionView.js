@@ -46,6 +46,9 @@ exports = Class(View, function() {
 		this.style.anchorX = hb.x + hb.w / 2;
 		this.style.anchorY = hb.y + hb.h / 2;
 		this.style.scale = 1;
+
+		this.sprite.style.width = MINION_WIDTH;
+		this.sprite.style.height = MINION_HEIGHT;
 		this.sprite.resetAllAnimations({
 			url: data.url,
 			defaultAnimation: 'run',
@@ -73,5 +76,16 @@ exports = Class(View, function() {
 		});
 		this.offense.style.visible = false;
 		this.offense.style.compositeOperation = "lighter";
+	};
+
+	this.onPolymorph = function() {
+		this.sprite.style.width = 197;
+		this.sprite.style.height = 102;
+		this.sprite.resetAllAnimations({
+			url: "resources/images/game/levels/lair/chicken",
+			defaultAnimation: 'poly',
+			loop: true,
+			autoStart: true
+		});
 	};
 });

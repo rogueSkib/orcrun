@@ -136,8 +136,14 @@ var Minion = Class(Entity, function() {
 			}), 750);
 			this.deathTrap.release(true);
 		} else if (this.deathTrap.id === "beholder") {
-			this.onRelease();
+			this.vx = 0;
+			this.vy = -0.2;
+			this.view.onPolymorph();
+			gameView.emitChickenDeath(this);
 			this.deathTrap.release(true);
+			setTimeout(bind(this, function() {
+				this.onRelease();
+			}), 750);
 		}
 	};
 
@@ -368,7 +374,7 @@ exports = Class(EntityPool, function() {
 				clearTimeout(minion.swipeTimeout);
 			}
 			// force charge when beholder kills one
-			if (onDeath && swipeType === "right") {
+			if (onDeath && swipeType === "right" && minion.isAlive()) {
 				minion.setState(STATES.CHARGING);
 			} else {
 				// delay following minions actions
