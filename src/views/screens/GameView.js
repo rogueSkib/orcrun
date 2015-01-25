@@ -115,7 +115,10 @@ exports = Class(View, function(supr) {
 	};
 
 	this.getPreloads = function() {
-		return ["resources/images/game"];
+		return [
+			"resources/images/game",
+			"resources/sounds/sfx"
+		];
 	};
 
 	this.resetView = function() {
@@ -175,9 +178,11 @@ exports = Class(View, function(supr) {
 
 	this.emitChickenDeath = function(trap) {
 		particles.emitFeathers(this.pEngine, trap);
+		particles.emitChickenDust(this.pEngine, trap);
 	};
 
 	this.emitBeholderDeath = function(trap) {
+		controller.playSound('beholder_pop');
 		particles.emitEyeStalks(this.pEngine, trap);
 	};
 

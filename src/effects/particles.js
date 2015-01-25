@@ -105,6 +105,37 @@ exports.emitFeathers = function(engine, entity) {
 	engine.emitParticles(data);
 };
 
+exports.emitChickenDust = function(engine, entity) {
+	var count = 17;
+	var data = engine.obtainParticleArray(count);
+	var hb = entity.hitBounds;
+	for (var i = 0; i < count; i++) {
+		var p = data[i];
+		var ttl = rollFloat(750, 1250);
+		var stop = -1000 / ttl;
+		var size = rollFloat(50, 100);
+		var x = entity.x + hb.x + (hb.w - size) / 2;
+		var y = entity.y + hb.y + (hb.h - size) / 2;
+		p.x = x + rollFloat(-75, 75);
+		p.y = y + rollFloat(-75, 75);
+		p.ddy = rollFloat(-150, 250);
+		p.r = TAU * random();
+		p.dr = rollFloat(-4, 4);
+		p.ddr = stop * p.dr;
+		p.anchorX = size / 2;
+		p.anchorY = size / 2;
+		p.width = size;
+		p.height = size;
+		p.scale = rollFloat(0.5, 1);
+		p.dscale = stop * p.scale;
+		p.ddopacity = 2 * stop;
+		p.ttl = ttl;
+		p.image = choose(DUST_IMAGES);
+		p.compositeOperation = "lighter";
+	}
+	engine.emitParticles(data);
+};
+
 exports.emitPlatformDust = function(engine, entity) {
 	var count = 7;
 	var data = engine.obtainParticleArray(count);

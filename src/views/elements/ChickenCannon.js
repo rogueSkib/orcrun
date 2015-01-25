@@ -7,6 +7,7 @@ var BG_HEIGHT = G_BG_HEIGHT;
 var CANNON_WIDTH = 442;
 var CANNON_HEIGHT = 490;
 
+var controller;
 var gameView;
 
 exports = Class(View, function() {
@@ -17,6 +18,7 @@ exports = Class(View, function() {
 		opts.anchorY = 0;
 		opts.width = CANNON_WIDTH;
 		opts.height = CANNON_HEIGHT;
+		controller = G_CONTROLLER;
 		gameView = opts.gameView;
 		sup.init.call(this, opts);
 
@@ -67,6 +69,8 @@ exports = Class(View, function() {
 	};
 
 	this.fire = function(trap) {
+		controller.playSound('cannon_fire');
+
 		this.chicken.style.visible = false;
 
 		trap.x = gameView.minions.screenX + this.style.x;

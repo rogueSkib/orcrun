@@ -98,8 +98,8 @@ exports = Class(View, function() {
 	};
 
 	this.onPolymorph = function() {
-		this.sprite.style.width = 197;
-		this.sprite.style.height = 102;
+		this.sprite.style.width = 150;
+		this.sprite.style.height = 145;
 		this.sprite.resetAllAnimations({
 			url: "resources/images/game/levels/lair/chicken",
 			defaultAnimation: 'poly',

@@ -91,6 +91,7 @@ var Controller = Class(function() {
 	};
 
 	this.transitionToGame = function() {
+		this.playSong('game');
 		this.transitionToScreen('GameView', GameView, false);
 	};
 

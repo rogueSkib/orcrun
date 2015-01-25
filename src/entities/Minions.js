@@ -3,6 +3,7 @@ import entities.Entity as Entity;
 import entities.EntityPool as EntityPool;
 
 import src.conf.minionConfig as minionConfig;
+import src.lib.utils as utils;
 import src.views.elements.MinionView as MinionView;
 
 var BG_WIDTH = G_BG_WIDTH;
@@ -21,6 +22,7 @@ var MINION_CHARGE_VX = 1.25;
 var MINION_DEATH_SHAKE = 1.4;
 
 var gameView;
+var controller;
 var chargeData = { vx: 0 };
 var swipeData = {
 	nextType: "",
@@ -31,6 +33,7 @@ var abs = Math.abs;
 var min = Math.min;
 var max = Math.max;
 var sqrt = Math.sqrt;
+var rollFloat = utils.rollFloat;
 
 var Minion = Class(Entity, function() {
 	var sup = Entity.prototype;
@@ -39,6 +42,8 @@ var Minion = Class(Entity, function() {
 
 	this.init = function(opts) {
 		this.state = STATES.FALLING;
+
+		controller = G_CONTROLLER;
 
 		sup.init.call(this, merge({ gameView: gameView }, opts));
 	};
@@ -126,6 +131,7 @@ var Minion = Class(Entity, function() {
 		if (this.deathTrap.id === "hole") {
 			setTimeout(bind(this, function() {
 				this.onRelease();
+				controller.playSound('death_lava');
 			}), 750);
 		} else if (this.deathTrap.id === "axe") {
 			this.vx = 1.2 * nx;
@@ -135,25 +141,34 @@ var Minion = Class(Entity, function() {
 			this.view.style.anchorY = hb.y + hb.h / 2;
 			animate(this.view, 'spin').now({ scale: 0, dr: 10 }, 1500, animate.easeOut);
 			gameView.emitSparksplosion(this);
+			controller.playSound('death_axe');
 			setTimeout(bind(this, function() {
 				this.onRelease();
 			}), 1500);
 		} else if (this.deathTrap.id === "chicken") {
 			this.vx = -1.25;
 			this.vy = -1.25 * abs(ny);
+			controller.playSound('chicken');
 			setTimeout(bind(this, function() {
 				this.onRelease();
 			}), 750);
 			this.deathTrap.release(true);
 		} else if (this.deathTrap.id === "beholder") {
-			this.vx = 0;
-			this.vy = -0.2;
 			this.view.onPolymorph();
 			gameView.emitChickenDeath(this);
 			this.deathTrap.release(true);
+			controller.playSound('death_zap');
+			setTimeout(bind(this, function() {
+				controller.playSound('chicken');
+			}), 250);
 			setTimeout(bind(this, function() {
 				this.onRelease();
-			}), 750);
+			}), 1000);
+
+			this.vx = 0;
+			this.vy = 0;
+			this.ax = rollFloat(0, 0.01);
+			this.ay = -0.0005;
 		}
 	};
 
@@ -220,6 +235,7 @@ var STATES = exports.STATES = {
 		id: "CHARGING",
 		onStateSet: function(minion) {
 			if (minion.poolIndex === 0) {
+				controller.playSound('minions_rush');
 				minion.view.offense.startAnimation('rush');
 			}
 
@@ -243,6 +259,7 @@ var STATES = exports.STATES = {
 		id: "DEFENDING",
 		onStateSet: function(minion) {
 			if (minion.poolIndex === 0) {
+				controller.playSound('minions_defend');
 				minion.view.defense.startAnimation('block');
 			}
 
@@ -280,6 +297,7 @@ var STATES = exports.STATES = {
 	JUMPING: {
 		id: "JUMPING",
 		onStateSet: function(minion) {
+			controller.playSound('minions_jump');
 			minion.vy += MINION_JUMP_VY;
 		},
 		onSwipe: function(minion, swipeType) {},
@@ -311,6 +329,8 @@ var STATES = exports.STATES = {
 			minion.view.sprite.startAnimation('slide', {
 				iterations: 999999
 			});
+
+			controller.playSound('minions_slide');
 
 			setTimeout(function() {
 				if (minion.isSliding()) {
