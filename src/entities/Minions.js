@@ -18,6 +18,7 @@ var MINION_DEFEND_TIME = 1500;
 var MINION_CHARGE_TIME = 1000;
 var MINION_CHARGE_FADE = 100;
 var MINION_CHARGE_VX = 1.1;
+var MINION_DEATH_SHAKE = 1.4;
 
 var gameView;
 var chargeData = { vx: 0 };
@@ -102,18 +103,18 @@ var Minion = Class(Entity, function() {
 	this.release = function() {
 		if (this.deathTrap.id === "hole") {
 			setTimeout(bind(this, function() {
-				gameView.emitScreenShake();
+				gameView.emitScreenShake(MINION_DEATH_SHAKE);
 				sup.release.call(this);
 			}), 1000);
 		} else if (this.deathTrap.id === "axe") {
-			gameView.emitScreenShake();
+			gameView.emitScreenShake(MINION_DEATH_SHAKE);
 			sup.release.call(this);
 		} else if (this.deathTrap.id === "chicken") {
-			gameView.emitScreenShake();
+			gameView.emitScreenShake(MINION_DEATH_SHAKE);
 			sup.release.call(this);
 			this.deathTrap.release(true);
 		} else if (this.deathTrap.id === "beholder") {
-			gameView.emitScreenShake();
+			gameView.emitScreenShake(MINION_DEATH_SHAKE);
 			sup.release.call(this);
 			this.deathTrap.release(true);
 		}

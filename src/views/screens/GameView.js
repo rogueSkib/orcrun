@@ -141,8 +141,13 @@ exports = Class(View, function(supr) {
 		particles.emitFeathers(this.pEngine, trap);
 	};
 
-	this.emitScreenShake = function() {
-		particles.shakeScreen(this.rootView);
+	this.emitPlatformDust = function(plat) {
+		particles.emitPlatformDust(this.pEngine, plat);
+		particles.emitPlatformGravel(this.pEngine, plat);
+	};
+
+	this.emitScreenShake = function(magnitude) {
+		particles.shakeScreen(this.rootView, magnitude);
 	};
 
 	this.onGameOver = function() {

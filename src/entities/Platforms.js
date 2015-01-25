@@ -117,6 +117,8 @@ exports = Class(EntityPool, function() {
 			this.y -= PLAT_HEIGHT;
 		}
 		plat.move(gap, -PLAT_HEIGHT, time);
+		gameView.emitScreenShake(0.3);
+		gameView.emitPlatformDust(plat);
 	};
 
 	this.getLastPlatform = function() {

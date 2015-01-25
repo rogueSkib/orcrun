@@ -23,6 +23,11 @@ var SMOKE_IMAGES = [
 	"resources/images/game/levels/lair/particleSmoke6.png"
 ];
 
+var DUST_IMAGES = [
+	"resources/images/game/levels/lair/particleDust1.png",
+	"resources/images/game/levels/lair/particleDust2.png"
+];
+
 exports.emitExplosion = function(engine, entity) {
 	var count = entity.id === "chicken" ? 8 : 16;
 	var data = engine.obtainParticleArray(count);
@@ -100,6 +105,72 @@ exports.emitFeathers = function(engine, entity) {
 	engine.emitParticles(data);
 };
 
+exports.emitPlatformDust = function(engine, entity) {
+	var count = 7;
+	var data = engine.obtainParticleArray(count);
+	var hb = entity.hitBounds;
+	// define each particles trajectory
+	for (var i = 0; i < count; i++) {
+		var p = data[i];
+		var delay = rollFloat(0, 500);
+		var ttl = rollFloat(1500, 2000);
+		var stop = -1000 / ttl;
+		var size = rollFloat(50, 75);
+		var x = entity.x + hb.x + (hb.w - size) / 2;
+		var y = entity.y + hb.y + (hb.h - size) / 2;
+		p.x = x + rollFloat(-25, 125) + (random() < 0.5 ? -1 : 1) * hb.w / 2;
+		p.y = y + rollFloat(-hb.h / 4, hb.h / 4);
+		p.ddy = rollFloat(-150, 250);
+		p.r = TAU * random();
+		p.dr = rollFloat(-4, 4);
+		p.ddr = stop * p.dr;
+		p.anchorX = size / 2;
+		p.anchorY = size / 2;
+		p.width = size;
+		p.height = size;
+		p.scale = rollFloat(0.25, 1);
+		p.dscale = stop * p.scale;
+		p.ddopacity = 2 * stop;
+		p.ttl = ttl;
+		p.image = choose(DUST_IMAGES);
+		p.compositeOperation = "lighter";
+	}
+	engine.emitParticles(data);
+};
+
+exports.emitPlatformGravel = function(engine, entity) {
+	var count = 7;
+	var data = engine.obtainParticleArray(count);
+	var hb = entity.hitBounds;
+	// define each particles trajectory
+	for (var i = 0; i < count; i++) {
+		var p = data[i];
+		var delay = rollFloat(0, 500);
+		var ttl = rollFloat(1000, 1500);
+		var stop = -1000 / ttl;
+		var size = rollFloat(20, 30);
+		var x = entity.x + hb.x + (hb.w - size) / 2;
+		var y = entity.y + hb.y + (hb.h - size) / 2;
+		p.x = x + rollFloat(-25, 125) + (random() < 0.5 ? -1 : 1) * hb.w / 2;
+		p.dx = rollFloat(-150, 150);
+		p.ddx = stop * p.dx;
+		p.y = y + rollFloat(-hb.h / 3, hb.h / 3);
+		p.dy = rollFloat(-300, 0);
+		p.ddy = rollFloat(750, 1000);
+		p.r = TAU * random();
+		p.dr = rollFloat(-4, 4);
+		p.ddr = stop * p.dr;
+		p.anchorX = size / 2;
+		p.anchorY = size / 2;
+		p.width = size;
+		p.height = size;
+		p.dscale = 0.8 * stop * p.scale;
+		p.ttl = ttl;
+		p.image = "resources/images/game/levels/lair/ball_boulder.png";
+	}
+	engine.emitParticles(data);
+};
+
 exports.emitEpicExplosion = function(engine, entity) {
 	var count = 120;
 	var circle = count / 8;
@@ -157,16 +228,12 @@ exports.emitEpicExplosion = function(engine, entity) {
 	engine.emitParticles(data);
 };
 
-exports.shakeScreen = function(rootView) {
-	// shake timing
+exports.shakeScreen = function(rootView, m) {
 	var ttl = 750;
 	var dt = ttl / 16;
-	// shake magnitude
-	var m = 1.4;
 	var x = rootView.style.x;
 	var y = rootView.style.y;
 	var s = rootView.style.scale;
-	// random shake radii
 	var r1 = TAU * random();
 	var r2 = TAU * random();
 	var r3 = TAU * random();
@@ -182,7 +249,7 @@ exports.shakeScreen = function(rootView) {
 	var r13 = TAU * random();
 	var r14 = TAU * random();
 
-	animate(rootView)
+	animate(rootView, 'shake').commit()
 	.then({ scale: s * (1 + 0.05 * m) }, dt, animate.easeIn)
 	.then({ x: x + 14 * m * cos(r1), y: y + 14 * m * sin(r1), scale: s * (1 + 0.046 * m) }, dt, animate.easeOut)
 	.then({ x: x + 13 * m * cos(r2), y: y + 13 * m * sin(r2), scale: s * (1 + 0.042 * m) }, dt, animate.easeInOut)
