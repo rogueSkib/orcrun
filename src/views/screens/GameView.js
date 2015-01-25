@@ -49,24 +49,24 @@ exports = Class(View, function(supr) {
 
 		this.scoreView = new ScoreView({
 			parent: this,
-			x: s.width - 100,
-			y: 0,
-			width: 100,
-			height: 64,
+			x: s.width - 166,
+			y: 16,
+			width: 150,
+			height: 100,
 			text: "0",
 			spacing: -8,
 			textAlign: "right",
 			characterData: {
-				"0": { image: "resources/images/game/0.png" },
-				"1": { image: "resources/images/game/1.png" },
-				"2": { image: "resources/images/game/2.png" },
-				"3": { image: "resources/images/game/3.png" },
-				"4": { image: "resources/images/game/4.png" },
-				"5": { image: "resources/images/game/5.png" },
-				"6": { image: "resources/images/game/6.png" },
-				"7": { image: "resources/images/game/7.png" },
-				"8": { image: "resources/images/game/8.png" },
-				"9": { image: "resources/images/game/9.png" }
+				"0": { image: "resources/images/game/score_0.png" },
+				"1": { image: "resources/images/game/score_1.png" },
+				"2": { image: "resources/images/game/score_2.png" },
+				"3": { image: "resources/images/game/score_3.png" },
+				"4": { image: "resources/images/game/score_4.png" },
+				"5": { image: "resources/images/game/score_5.png" },
+				"6": { image: "resources/images/game/score_6.png" },
+				"7": { image: "resources/images/game/score_7.png" },
+				"8": { image: "resources/images/game/score_8.png" },
+				"9": { image: "resources/images/game/score_9.png" }
 			}
 		});
 
