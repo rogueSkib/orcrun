@@ -1,4 +1,5 @@
-var MINION_SIZE = 158;
+var MINION_WIDTH = 220;
+var MINION_HEIGHT = 258;
 var MINION_URL = "resources/images/game/minions/";
 
 exports = {
@@ -7,28 +8,28 @@ exports = {
 	ax: 0,
 	ay: 0.002,
 	hitBounds: {
-		x: 70,
-		y: 70,
-		w: 52,
-		h: 66
+		x: 84,
+		y: 113,
+		w: 71,
+		h: 88
 	},
 	viewBounds: {
-		w: MINION_SIZE,
-		h: MINION_SIZE
+		w: MINION_WIDTH,
+		h: MINION_HEIGHT
 	},
 	inputMoveMultiplier: 1,
 	types: [
 		{
 			id: "hero",
-			url: MINION_URL + "hero/herobot"
+			url: MINION_URL + "mage/mage"
 		},
 		{
-			id: "cat",
-			url: MINION_URL + "cat/catbot"
+			id: "rogue",
+			url: MINION_URL + "rogue/rogue"
 		},
 		{
-			id: "wiz",
-			url: MINION_URL + "wiz/wizbot"
+			id: "mage",
+			url: MINION_URL + "mage/mage"
 		}
 	]
 };

@@ -30,6 +30,7 @@ var Trap = Class(Entity, function() {
 	this.reset = function(x, y, config) {
 		this.id = config.id;
 		this.swipeType = config.swipeType;
+		this.enraged = false;
 
 		sup.reset.call(this, x, y, config);
 	};
@@ -51,7 +52,7 @@ var Trap = Class(Entity, function() {
 		}
 
 		var vb = this.viewBounds;
-		if (this.x + vb.x + vb.h < gameView.minions.screenX) {
+		if (this.x + vb.x + vb.w < gameView.minions.screenX - BG_WIDTH) {
 			this.release();
 		}
 	};

@@ -2,7 +2,7 @@ exports = {
 	"lair": [
 		{
 			id: "bg",
-			xMultiplier: 0.1,
+			xMultiplier: 0.15,
 			xCanSpawn: true,
 			xCanRelease: true,
 			yMultiplier: 0,
