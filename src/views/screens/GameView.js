@@ -8,13 +8,15 @@ import src.conf.parallaxConfig as parallaxConfig;
 import src.effects.particles as particles;
 import src.entities.Minions as Minions;
 import src.entities.Platforms as Platforms;
+import src.entities.Traps as Traps;
 import src.views.elements.Input as Input;
 
 var BG_WIDTH = G_BG_WIDTH;
 var BG_HEIGHT = G_BG_HEIGHT;
 var Z_BG = 1;
 var Z_PLATFORMS = 40;
-var Z_MINION = 50;
+var Z_MINIONS = 50;
+var Z_TRAPS = 60;
 
 var model;
 var controller;
@@ -43,13 +45,19 @@ exports = Class(View, function(supr) {
 		this.minions = new Minions({
 			parent: this.rootView,
 			gameView: this,
-			zIndex: Z_MINION
+			zIndex: Z_MINIONS
 		});
 
 		this.platforms = new Platforms({
 			parent: this.rootView,
 			gameView: this,
 			zIndex: Z_PLATFORMS
+		});
+
+		this.traps = new Traps({
+			parent: this.rootView,
+			gameView: this,
+			zIndex: Z_TRAPS
 		});
 
 		this.parallax = new Parallax({
@@ -84,6 +92,7 @@ exports = Class(View, function(supr) {
 		this.pEngine.killAllParticles();
 		this.minions.reset();
 		this.platforms.reset();
+		this.traps.reset();
 		this.parallax.reset(parallaxConfig[model.levelID]);
 		this.input.reset();
 		this.tick(0);
@@ -97,6 +106,7 @@ exports = Class(View, function(supr) {
 
 		this.minions.update(dt);
 		this.platforms.update(dt);
+		this.traps.update(dt);
 		this.parallax.update(-this.minions.screenX, 0);
 
 		this.pEngine.runTick(dt);

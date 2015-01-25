@@ -1,3 +1,4 @@
+import animate;
 import ui.View as View;
 import entities.Entity as Entity;
 import entities.EntityPool as EntityPool;
@@ -8,9 +9,12 @@ import src.lib.utils as utils;
 var BG_WIDTH = G_BG_WIDTH;
 var BG_HEIGHT = G_BG_HEIGHT;
 var PLAT_HEIGHT = 47;
-var Z_MAX = 100000;
+var Y_MIN = BG_HEIGHT - 3 * PLAT_HEIGHT;
+var Y_MAX = BG_HEIGHT - PLAT_HEIGHT;
+var Z_MAX = 1000000;
 
 var gameView;
+var random = Math.random;
 var choose = utils.choose;
 var rollFloat = utils.rollFloat;
 var rollInt = utils.rollInt;
@@ -32,6 +36,29 @@ var Platform = Class(Entity, function() {
 		if (this.x + vb.x + vb.w < gameView.minions.screenX) {
 			this.release();
 		}
+	};
+
+	this.move = function(dx, dy, dt) {
+		animate(this).now({
+			x: this.x - dx / 8,
+			y: this.y - dy / 8
+		}, dt / 8, animate.easeOut)
+		.then({
+			x: this.x + dx / 8,
+			y: this.y + dy / 8
+		}, dt / 8, animate.easeIn)
+		.then({
+			x: this.x - dx / 5,
+			y: this.y - dy / 5
+		}, dt / 8, animate.easeIn)
+		.then({
+			x: this.x + dx / 5,
+			y: this.y + dy / 5
+		}, dt / 8, animate.easeOut)
+		.then({
+			x: this.x + dx,
+			y: this.y + dy
+		}, dt / 2, animate.easeOut);
 	};
 });
 
@@ -56,7 +83,7 @@ exports = Class(EntityPool, function() {
 		sup.reset.call(this);
 
 		this.x = 0;
-		this.y = BG_HEIGHT - PLAT_HEIGHT;
+		this.y = Y_MAX;
 		this.z = Z_MAX;
 	};
 
@@ -77,19 +104,40 @@ exports = Class(EntityPool, function() {
 	this.spawnOne = function(x) {
 		var options = platformConfig[gameView.model.levelID];
 		var option = choose(options);
+
+		if (this.y < Y_MAX && random() < 0.1) {
+			this.y += PLAT_HEIGHT;
+		}
+
 		var plat = this.obtain(x, this.y, option);
 		var platView = plat.view;
 		var pvs = platView.style;
 		pvs.zIndex = this.z--;
 		pvs.flipY = option.flipY || false;
 
-		// reset zIndex if possible
-		var gap = rollFloat(option.gapRange[0], option.gapRange[1]);
-		if (gap) {
-			this.z = Z_MAX;
-		}
-
 		// return the next spawn x
-		return pvs.width - option.overlap + gap;
+		var gap = rollFloat(option.gapRange[0], option.gapRange[1]);
+		return pvs.width + gap;
+	};
+
+	this.getLastPlatform = function() {
+		var last = null;
+		var xMax = 0;
+		this.forEachActiveEntity(function(platform, i) {
+			if (platform.x >= xMax) {
+				last = platform;
+				xMax = platform.x;
+			}
+		}, this);
+		return last;
+	};
+
+	this.onSpawnHole = function(gap, time) {
+		var plat = this.getLastPlatform();
+		this.x += gap;
+		if (this.y > Y_MIN) {
+			this.y -= PLAT_HEIGHT;
+		}
+		plat.move(gap, -PLAT_HEIGHT, time);
 	};
 });
