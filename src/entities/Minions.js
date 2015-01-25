@@ -33,6 +33,7 @@ var abs = Math.abs;
 var min = Math.min;
 var max = Math.max;
 var sqrt = Math.sqrt;
+var random = Math.random;
 var rollFloat = utils.rollFloat;
 
 var Minion = Class(Entity, function() {
@@ -106,6 +107,10 @@ var Minion = Class(Entity, function() {
 
 			if (this.getMaxHitY() > gameView.platforms.getMaxY()) {
 				this.pool.onTrapped(this, { id: "hole", swipeType: "up" });
+			}
+
+			if ((this.isCharging() || this.isSliding()) && random() < 0.33) {
+				gameView.emitSlideDust(this);
 			}
 		}
 	};

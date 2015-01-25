@@ -50,7 +50,9 @@ var Controller = Class(function() {
 			var fadeTime = instant ? 0 : 500;
 			currView.deconstructView();
 			currView.style.zIndex = 2;
-			animate(currView).now({ opacity: 0 }, fadeTime, animate.linear)
+			animate(currView)
+			.wait(3 * fadeTime)
+			.then({ opacity: 0 }, fadeTime, animate.linear)
 			.then(function() { currView.style.visible = false; })
 			.then(bind(this, 'finishTransition'));
 		} else {

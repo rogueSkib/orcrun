@@ -8,9 +8,6 @@ var WEEBY_ENABLED = G_WEEBY_ENABLED;
 
 var controller;
 
-var LOGO_WIDTH = 250;
-var LOGO_HEIGHT = 250;
-
 exports = Class(View, function(supr) {
 	this.init = function(opts) {
 		supr(this, 'init', arguments);
@@ -31,16 +28,7 @@ exports = Class(View, function(supr) {
 			anchorY: BG_HEIGHT / 2,
 			width: BG_WIDTH,
 			height: BG_HEIGHT,
-			image: "resources/images/splash/background.png"
-		});
-
-		this.logo = new ImageView({
-			parent: this.splash,
-			x: (BG_WIDTH - LOGO_WIDTH) / 2,
-			y: (BG_HEIGHT - LOGO_HEIGHT) / 2,
-			width: LOGO_WIDTH,
-			height: LOGO_HEIGHT,
-			image: "resources/images/splash/logo.png"
+			image: "resources/images/splash/splash.png"
 		});
 	};
 

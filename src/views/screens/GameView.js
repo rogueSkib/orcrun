@@ -186,6 +186,10 @@ exports = Class(View, function(supr) {
 		particles.emitEyeStalks(this.pEngine, trap);
 	};
 
+	this.emitSlideDust = function(minion) {
+		particles.emitSlideDust(this.pEngine, minion);
+	};
+
 	this.emitPlatformDust = function(plat) {
 		particles.emitPlatformDust(this.pEngine, plat);
 		particles.emitPlatformGravel(this.pEngine, plat);
