@@ -45,6 +45,8 @@ exports = {
 			defense: {
 				x: 55,
 				y: 75,
+				anchorX: 98,
+				anchorY: 72,
 				width: 196,
 				height: 145,
 				url: MINION_URL + "rogue/slash"

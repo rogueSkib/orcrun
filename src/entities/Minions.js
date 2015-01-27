@@ -277,13 +277,11 @@ var STATES = exports.STATES = {
 				controller.playSound('minions_defend');
 				minion.view.defense.startAnimation('block');
 
-				if (minion.id !== "rogue") {
-					var def = minion.view.defense;
-					def.style.scale = 0;
-					animate(def).now({ scale: 1.15 }, 175, animate.easeOut)
-					.then({ scale: 0.925 }, 50, animate.easeIn)
-					.then({ scale: 1 }, 25, animate.easeOut);
-				}
+				var def = minion.view.defense;
+				def.style.scale = 0;
+				animate(def).now({ scale: 1.15 }, 175, animate.easeOut)
+				.then({ scale: 0.925 }, 50, animate.easeIn)
+				.then({ scale: 1 }, 25, animate.easeOut);
 			}
 
 			setTimeout(function() {
@@ -300,16 +298,12 @@ var STATES = exports.STATES = {
 			}
 		},
 		onStateEnd: function(minion) {
-			if (minion.id !== "rogue") {
-				var def = minion.view.defense;
-				animate(def).now({ scale: 1.15 }, 50, animate.easeOut)
-				.then({ scale: 0 }, 200, animate.easeIn)
-				.then(function() {
-					minion.view.defense.stopAnimation();
-				});
-			} else {
+			var def = minion.view.defense;
+			animate(def).now({ scale: 1.15 }, 50, animate.easeOut)
+			.then({ scale: 0 }, 200, animate.easeIn)
+			.then(function() {
 				minion.view.defense.stopAnimation();
-			}
+			});
 		}
 	},
 	DEAD: {
