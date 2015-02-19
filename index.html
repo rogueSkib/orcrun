@@ -23,9 +23,14 @@
 					var ratio = width / height;
 					var horzFit = ratio <= BG_RATIO;
 					var scale = horzFit ? width / BG_WIDTH : height / BG_HEIGHT;
+					var ua = navigator.userAgent;
+					var isMobileSafari = /Mobile Safari/.test(ua);
+					var mult = isMobileSafari
+						? ratio > 1 ? 0.66 : 0.78
+						: 1;
 
-					game.width = scale * BG_WIDTH;
-					game.height = scale * BG_HEIGHT;
+					game.width = mult * scale * BG_WIDTH;
+					game.height = mult * scale * BG_HEIGHT;
 
 					if (game.width > BG_WIDTH) {
 						game.height *= BG_WIDTH / game.width;
